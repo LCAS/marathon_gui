@@ -46,6 +46,7 @@ class WebInterface():
         self.config = self.loadConfig(behaviour)
         self.buttonmappings = self.config['buttonmappings']
         self.move_speeches = self.config['speeches']['moving']
+        self.tweets_action = self.config['tweets']['action']
         pprint.pprint(self.config)
 
         s = rospy.Service('~create_task', MapButtonService, self.create_task)
@@ -99,6 +100,7 @@ class WebInterface():
         task_utils.add_string_argument(task, data['action'])
         task_utils.add_string_argument(task, action[data['action']]['page'])
         task_utils.add_string_argument(task, action[data['action']]['text'])
+        task_utils.add_string_argument(task, self.tweets_action[randint(0, len(self.tweets_action)-1)])
         self.td.demand_task(task)
         return MapButtonServiceResponse()
 

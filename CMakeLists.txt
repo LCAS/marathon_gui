@@ -76,9 +76,9 @@ generate_messages(
 )
 
 #add dynamic reconfigure api
-generate_dynamic_reconfigure_options(
-  cfg/ChargingThresholds.cfg
-)
+#generate_dynamic_reconfigure_options(
+#  cfg/ChargingThresholds.cfg
+#)
 
 # make sure configure headers are built before any node using them
 # add_dependencies(example_node ${PROJECT_NAME}_gencfg)

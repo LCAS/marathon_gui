@@ -10,7 +10,7 @@ from std_srvs.srv import Empty
 
 class TaskDemander(object):
     """ Create a services that will propose a the given task on demand """
-    def __init__(self):
+    def __init__(self, with_monitor=True):
         super(TaskDemander, self).__init__()
 
         demand_task_service = '/task_executor/demand_task'
@@ -27,7 +27,13 @@ class TaskDemander(object):
         set_execution_status(True)
         self.is_default_srv = rospy.ServiceProxy(is_default_srv_name, IsDefaultService)
         self.default_srv = rospy.ServiceProxy(default_page_srv_name, Empty)
-        self.sub = rospy.Subscriber(current_schedule_topic, ExecutionStatus, self.schedule_monitor)
+        if with_monitor:
+            self.sub = rospy.Subscriber(
+                current_schedule_topic,
+                ExecutionStatus,
+                callback=self.schedule_monitor,
+                queue_size=1
+            )
 
     def demand_task(self, task):
         """ Demand a task and catch any exceptions """
@@ -38,13 +44,19 @@ class TaskDemander(object):
     		rospy.logwarn(e)
 
     def schedule_monitor(self, schedule):
-        """docstring for schdule_monitor"""
+        """docstring for schedule_monitor"""
+        rospy.logdebug("schedule_monitor triggered")
+        if len(schedule.execution_queue) == 0 and self.is_default_srv().default:
+            rospy.sleep(60)
+            return
         if not schedule.currently_executing and not self.is_default_srv().default\
                 or len(schedule.execution_queue) == 0 and not self.is_default_srv().default:
             self.default_srv()
-            rospy.loginfo("No tasks active. Will show map for interaction.")
+            rospy.loginfo("Schedule Monitor: No tasks active. Will show map for interaction.")
+            rospy.sleep(60)
             return
         if schedule.execution_queue[0].action == '' and not self.is_default_srv().default:
             self.default_srv()
-            rospy.loginfo("Current task has no action. Assumed to be a simple patrol. Map will be shown.")
+            rospy.loginfo("Schedule Monitor: Current task has no action. Assumed to be a simple patrol. Map will be shown.")
+            rospy.sleep(60)
             return

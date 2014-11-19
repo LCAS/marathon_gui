@@ -69,6 +69,11 @@
         Show me your card to tweet a picture<br><br>
         <img src="card.png" style="height: 80px; width: 120px">
         </div>
+        <!-- Mosaic buttons -->
+        <ul style="position: absolute; left: 479px; top: 250px; width: 119px;">
+          <button type="button" onclick="var service_button = new ROSLIB.Service({ros : ros, name : '/marathon_web_interfaces/create_task', serviceType : 'marathon_gui/MapButtonService'}); var request_button = new ROSLIB.ServiceRequest({identifier : '{&quot;waypoint&quot;: &quot;mosaik&quot;, &quot;action&quot;: &quot;twitter&quot;}'});  service_button .callService(request_button, function(result) {console.log('Called service'); }); console.log('Called')"
+            class="button-style twitter-button" style="height: 45px; width: 45px;"></button>
+        </ul>
         <!-- Boat buttons -->
         <ul style="position: absolute; left: 369px; top: 170px; width: 119px;">
           <button type="button" onclick="var service_button = new ROSLIB.Service({ros : ros, name : '/marathon_web_interfaces/create_task', serviceType : 'marathon_gui/MapButtonService'}); var request_button = new ROSLIB.ServiceRequest({identifier : '{&quot;waypoint&quot;: &quot;boat&quot;, &quot;action&quot;: &quot;info&quot;}'});  service_button .callService(request_button, function(result) {console.log('Called service'); }); console.log('Called')"

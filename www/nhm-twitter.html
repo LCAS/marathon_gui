@@ -33,22 +33,9 @@
               url : 'ws://'+hostname+':9090'
           });
         
-        var sayTopic = new ROSLIB.Topic({
-              ros         : ros,
-              name        : '/nhm/speak',
-              messageType : 'std_msgs/String'
-          });
-          
-          sayTopic.subscribe(function(message) {
-              // Formats the pose for outputting.
-              var say = message.data;
-      
-              document.getElementById("saytext").value=say;
-          });
-        
         var msgTopic = new ROSLIB.Topic({
               ros         : ros,
-              name        : '/nhm/twitter/message',
+              name        : '/marathon_web_interfaces/twitter/message',
               messageType : 'std_msgs/String'
           });
           
@@ -64,15 +51,14 @@
   <body onload="init()">
     <div id="container" style="width:1000px; height:600px">
       <div id="logo-left" style="height: 500px; width: 300px; float: left; text-align: center;">
-        <textarea class="speechout" id="saytext">This is what I should be saying in multiple lines.</textarea>
         <img style="width: 295px; height: 658px;" src="robot-white.png">
         http://strands-project.eu </div>
       <div id="content" style="height: 650px; width: 700px; float: left; text-align: center;">
-        <h2>Robots on patrol</h2>
+        <h2>Linda, the robotic guide</h2>
         <p>Tweeting:</p>
         <div id="container" class="cardbox">
-        Show me your lanyard to tweet a picture<br><br>
-        <img src="card.png" style="height: 120px; width: 80px">
+        Show me your card to tweet a picture<br><br>
+        <img src="card.png" style="height: 80px; width: 120px">
         </div>
         <div id="mjpeg" style="position: absolute; left: 340px; top: 170px; width: 640px;"></div>
         <textarea class="speechout" style="overflow:hidden; resize:none; position: absolute; left: 340px; top: 170px; width: 636px; height: 50px; font-weight: bold;"

@@ -6,6 +6,12 @@ buttonmappings:
                 This complete boat was made from a single oak tree truck, and still bears axe marks from its manufacture. 
                 It was deliberately sunk as an offering and may have been specially made for this purpose.
             page: nhm-info.html
+    mosaik: 
+        waypoint: WayPoint3
+        twitter:
+            text: |
+                Image taken.
+            page: nhm-twitter.html
     axes: 
         waypoint: WayPoint2
         info:
@@ -66,17 +72,17 @@ speeches:
         - I only arrived here recently but I'll tell you what I know.
 tweets:
     action:
-        - A visitor of the 2014 #UniWeek asked me to take this picture. @unilincoln @NHM_London @strands_project
-        - I was sent here by a visitor of the 2014 #UniWeek to tweet a picture. @unilincoln @NHM_London @strands_project
-        - I was asked to tweet this picture during #UniWeek @NHM_London. Don't blame me if it's boring. @unilincoln
-        - A lot of tweeting going on at #UniWeek. Here is another one from @NHM_London. @unilincoln
+        - A visitor of the 2014  asked me to take this picture. 
+        - I was sent here by a visitor of the 2014  to tweet a picture. 
+        - I was asked to tweet this picture during . Don't blame me if it's boring. 
+        - A lot of tweeting going on at . Here is another one from 
     card:
-        - Look who came to visit me at #UniWeek in @NHM_London. @unilincoln @strands_project
-        - One of my friends came to @NHM_London for #UniWeek and visited the @unilincoln stand.
-        - Look who is here @NHM_London for #UniWeek. @unilincoln @strands_project
-        - I am here @NHM_London with my friend for #UniWeek. @unilincoln
-        - #UniWeek is always a nice excuse for meeting new people. @NHM_London @unilincoln
-        - Robots, Dinosaurs and Friends! @NHM_London #UniWeek @unilincoln @strands_project
-        - I came from @unilincoln to @NHM_London for #UniWeek to meet this lovely human.
-        - I took a picture of this guy at #UniWeek in @NHM_London. I hope he also tweeted one of me. @unilincoln
-        - I'm good at tweeting but I can do other things as well: http://strands-project.eu @strands_project #UniWeek
+        - Look who came to visit me at 
+        - One of my friends came to  for  and visited the  stand.
+        - Look who is here NHM_London for UniWeek. unilincoln strands_project
+        - I am here NHM_London with my friend for UniWeek. unilincoln
+        - UniWeek is always a nice excuse for meeting new people. NHM_London unilincoln
+        - Robots, Dinosaurs and Friends! NHM_London UniWeek unilincoln strands_project
+        - I came from @unilincoln to NHM_London for UniWeek to meet this lovely human.
+        - I took a picture of this guy at UniWeek in NHM_London. I hope he also tweeted one of me. unilincoln
+        - I'm good at tweeting but I can do other things as well: http://strands-project.eu strands_project #UniWeek
