@@ -1,0 +1,150 @@
+$def with (element)
+
+// setup a listener for the schedule
+var taskEventListener = new ROSLIB.Topic({
+ros : ros,
+name : '/task_executor/events',
+messageType : 'strands_executive_msgs/TaskEvent',
+});
+ 
+
+// setup a listener for nav feedback
+var topNavFeedbackListener = new ROSLIB.Topic({
+ros : ros,
+name : '/topological_navigation/feedback',
+messageType : 'topological_navigation/GotoNodeActionFeedback',
+});
+
+
+// and one for the closest node
+// setup a listener for nav feedback
+var closestNodeListener = new ROSLIB.Topic({
+ros : ros,
+name : '/closest_node',
+messageType : 'std_msgs/String',
+throttle : 4,
+});
+
+
+
+/**
+ Convert int to task event string
+*/
+function taskEventString(te) {
+ 
+    if (te == 1) {
+        return 'ADDED';
+    }
+    else if (te == 2) {
+        return 'DEMANDED';
+    }
+    else if (te == 3) {
+        return 'TASK_STARTED';
+    }
+    else if (te == 4) {
+        return 'NAVIGATION_STARTED';
+    }
+    else if (te == 5) {
+        return 'NAVIGATION_SUCCEEDED';
+    }
+    else if (te == 6) {
+        return 'NAVIGATION_FAILED';
+    }
+    else if (te == 7) {
+        return 'NAVIGATION_PREEMPTED';
+    }
+    else if (te == 8) {
+        return 'EXECUTION_STARTED';
+    }
+    else if (te == 9) {
+        return 'EXECUTION_SUCCEEDED';
+    }
+    else if (te == 10) {
+        return 'EXECUTION_FAILED';
+    }
+    else if (te == 11) {
+        return 'EXECUTION_PREEMPTED';
+    }
+    else if (te == 12) {
+        return 'CANCELLED_MANUALLY';
+    }
+    else if (te == 13) {
+        return 'DROPPED'    ;
+    }
+    else if (te == 14) {
+        return 'TASK_FINISHED'    ;
+    }
+    else if (te == 15) {
+        return 'TASK_FAILED';
+    }
+    else if (te == 16) {
+        return 'TASK_SUCCEEDED';
+    }
+    else if (te == 17) {
+        return 'TASK_PREEMPTED'    ;
+    }
+
+}
+
+var topNavFeedback;
+
+topNavFeedbackListener.subscribe(function(feedback) {
+  topNavFeedback = feedback;
+  update();
+});
+
+var taskEvent;
+
+taskEventListener.subscribe(function(te) {
+  taskEvent = te;
+  update();
+});
+
+var closestNode = "";
+
+closestNodeListener.subscribe(function(cn) {
+  closestNode = cn.data;
+  update();
+});
+
+
+function update() {
+
+  var output = "<p class=\"lead text-center\">Robot at <em>" + closestNode  + "</em>";    
+
+  if(taskEvent != null) {
+
+    if(taskEvent.event > 2) {
+
+      if(taskEvent.event < 9) {
+
+        output += ", executing <strong>Task " + taskEvent.task.task_id + "</strong>";
+
+        if(taskEvent.event == 4) {
+          if(topNavFeedback != null) {
+            output += " navigating from " + topNavFeedback.feedback.route;
+          }
+        }        
+        else if(taskEvent.event == 8) {
+          output += ", performing action " + taskEvent.task.action
+        }
+        else {
+          output += " with status " + taskEventString(taskEvent.event);
+        }
+
+      }
+
+      else {
+        output += " task " + taskEvent.task.task_id + " ended with status " + taskEventString(taskEvent.event);
+      }
+
+      output += "</p>"
+    }
+  }  
+  $$("$element").html(output);
+}
+
+
+
+
+

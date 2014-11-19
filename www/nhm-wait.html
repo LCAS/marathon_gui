@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta content="text/html; charset=UTF-8" http-equiv="content-type">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="stylesheet" type="text/css" href="nhm-style.css">
+    <title>template</title>
+    <script src="roslibjs/include/EventEmitter2/eventemitter2.js"></script>
+    <script type="text/javascript" src="mjpegcanvasjs/build/mjpegcanvas.min.js"></script>
+    <script src="roslibjs/build/roslib.js"></script>
+    <script type="text/javascript">
+        /**
+        * Setup all visualization elements when the page is loaded. 
+        */
+      function init() {
+          var hostname = location.hostname;
+        
+          // Create the main viewer.
+          var viewer = new MJPEGCANVAS.Viewer({
+          divID : 'mjpeg',
+          host : hostname,
+          width : 640,
+          height : 480,
+          topic : '/mdl_people_tracker/image'
+          });
+
+          // Connecting to ROS
+          // -----------------
+          
+
+          var ros = new ROSLIB.Ros({
+             // this is filled by the ros node when writing this page to the web server, but doesn't currently work
+              // url : '<dynamic>bridge_server</dynamic>'
+              url : 'ws://'+hostname+':9090'
+          });
+
+          var sayTopic = new ROSLIB.Topic({
+              ros         : ros,
+              name        : '/nhm/speak',
+              messageType : 'std_msgs/String'
+          });
+          
+          sayTopic.subscribe(function(message) {
+              // Formats the pose for outputting.
+              var say = message.data;
+      
+              document.getElementById("saytext").value=say;
+          });
+                    
+        } 
+      </script>
+  </head>
+  <body onload="init()">
+    <div id="container" style="width:1000px; height:600px">
+      <div id="logo-left" style="height: 500px; width: 300px; float: left; text-align: center;">
+         <textarea class="speechout" id="saytext">This is what I should be saying in multiple lines.</textarea> 
+            <img style="width: 295px; height: 658px;"
+            src="robot-white.png"> 
+        http://strands-project.eu </div>
+      <div id="content" style="height: 650px; width: 700px; float: left; text-align: center;">
+        <h2>Robots on patrol</h2>
+        <p>Hi, I am Linda the robot.</p>
+        <div id="container" class="cardbox">
+        Show me your lanyard to tweet a picture<br><br>
+        <img src="card.png" style="height: 120px; width: 80px">
+        </div>
+        <div id="mjpeg" style="position: absolute; left: 340px; top: 170px; width: 640px;"></div>
+      </div>
+      <div id="footer" tyle="text-align:right;font-size:75%;"> <img src="white-strands.png"
+          style="position: absolute; left: 425px; top: 680px; width: 215px; height: 72px;"
+          align="middel"><img src="uol-crest-white.png" style="position: absolute; left: 917px; top: 674px; width: 82px; height: 76px;"
+          align="right"> </div>
+    </div>
+    
+  </body>
+</html>

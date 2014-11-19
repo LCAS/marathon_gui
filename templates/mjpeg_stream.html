@@ -1,0 +1,11 @@
+$def with (element)
+
+        var mjpeg_viewer = new MJPEGCANVAS.Viewer({
+        divID : '$element',
+        host : hostname,
+        port : '8181',
+        width : 560,
+        height : 420,
+        topic : '/webthrottle/head/image'
+        });
+
