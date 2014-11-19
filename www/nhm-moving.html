@@ -27,19 +27,6 @@
           url : 'ws://'+hostname+':9090'
         });
         
-        var sayTopic = new ROSLIB.Topic({
-            ros         : ros,
-            name        : '/nhm/speak',
-            messageType : 'std_msgs/String'
-        });
-        
-        sayTopic.subscribe(function(message) {
-            // Formats the pose for outputting.
-            var say = message.data;
-    
-            document.getElementById("saytext").value=say;
-        });
-  
         // Create the main viewer.
         var viewer = new ROS2D.Viewer({
           divID : 'nav',
@@ -119,15 +106,14 @@
   <body onload="init()">
     <div id="container" style="width:1000px; height:600px">
       <div id="logo-left" style="height: 500px; width: 300px; float: left; text-align: center;">
-        <textarea class="speechout" id="saytext">This is what I should be saying in multiple lines.</textarea>
             <img style="width: 295px; height: 658px;" src="robot-white.png">
         http://strands-project.eu </div>
       <div id="content" style="height: 650px; width: 700px; float: left; text-align: center;">
-        <h2>Robots on patrol</h2>
+        <h2>Linda, the robotic guide</h2>
         <p>Please follow me.</p>
         <div id="container" class="cardbox">
-        Show me your lanyard to tweet a picture<br><br>
-        <img src="card.png" style="height: 120px; width: 80px">
+        Show me your card to tweet a picture<br><br>
+        <img src="card.png" style="height: 80px; width: 120px">
         </div>
         <div id="nav" style="height: 400px; width: 400px; position: absolute; left: 470px; top: 200px; width: 119px; text-align: center;">
         </div>

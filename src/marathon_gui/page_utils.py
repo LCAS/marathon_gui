@@ -13,7 +13,6 @@ from std_srvs.srv import Empty, EmptyResponse
 class PageUtils(object):
     """docstring for PageUtils"""
     def __init__(self, package_name='marathon_gui', page='index.html', default_page='index.html', display_no=0):
-        self.template_dir = roslib.packages.get_pkg_dir(package_name) + '/templates'
         self.www_prefix = roslib.packages.get_pkg_dir(package_name) + '/www/'
         self.page = page
         self.default_page = default_page
