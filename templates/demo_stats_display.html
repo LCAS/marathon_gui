@@ -1,0 +1,41 @@
+$def with (element)
+
+var demoStatsListener = new ROSLIB.Topic({
+ros : ros,
+name : '/demo_stats',
+messageType : 'y1_interfaces/DemoStats',
+});
+ 
+
+demoStatsListener.subscribe(function(demoStats) {
+
+   console.log("got stats")
+
+  var output = "<p class=\"text-center\">Robot activity since <em>" + moment(new Date(demoStats.autonomy_start.secs * 1000)).format('MMMM Do YYYY, HH:mm') + "</em>";    
+
+  output += "<table class=\"table\">"
+  
+  // duration
+  output += "<tr><td>Autonomous activity</td><td>"
+  output += moment.duration(demoStats.autonomy_duration.secs, "seconds").format("d [days] hh [hrs] mm [mins]");
+  output += "</td></tr>"
+
+  // distance
+  output += "<tr><td>Distance travelled</td><td>"
+  output += (demoStats.distance_travelled/1000).toFixed(3) + " km";
+  output += "</td></tr>"
+
+
+  // task counts
+  output += "<tr><td>Tasks</td><td>"
+  output += demoStats.task_success_count + demoStats.task_fail_count + demoStats.task_preempt_count + " <font color=\"green\">" + demoStats.task_success_count + "</font>/<font color=\"red\">" +  demoStats.task_fail_count + "</font>/<font color=\"blue\">" + demoStats.task_preempt_count + "</font>";
+  output += "</td></tr>"
+
+
+  output += "</table>"
+
+  output += "</p>";
+  $$("$element").html(output);
+
+
+});
