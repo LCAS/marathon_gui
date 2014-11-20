@@ -1,0 +1,13 @@
+<launch>
+  <arg name="behaviour" default="collection"/>
+  <arg name="simulator_mode" default="false"/>
+
+  <node name="execute_marathon_task" pkg="marathon_gui" type="execute_task.py" output="screen" respawn="true" >
+    <param name="simulator_mode" value="$(arg simulator_mode)" type="bool"/>
+  </node>
+  <node name="marathon_card_interfaces" pkg="marathon_gui" type="card_interface.py" output="screen" respawn="true" /> 
+  <node pkg="marathon_gui" type="web_interface.py" respawn="true" name="marathon_web_interfaces" output="screen">
+    <param name="behaviour" value="$(arg behaviour)" type="string"/>
+  </node>
+
+</launch>

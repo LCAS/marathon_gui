@@ -5,7 +5,7 @@ import actionlib
 from marathon_gui.msg import ExecuteTaskAction, ExecuteTaskGoal
 import marathon_gui.marathon_utils as utils
 from marathon_gui.srv import CreatePageService, ShowPageService
-from std_srvs.srv import Empty
+from std_srvs.srv import Empty, EmptyResponse
 from std_msgs.msg import String
 from strands_tweets.msg import SendTweetAction, SendTweetGoal
 from image_branding.msg import ImageBrandingAction, ImageBrandingGoal
@@ -18,33 +18,38 @@ class ExecuteTask():
     def __init__(self, name):
         rospy.loginfo("Starting %s", name)
         self._action_name = name
+        self.simulator = rospy.get_param("~simulator_mode", False)
         create_page_srv_name = '/marathon_web_interfaces/create_page'
         show_default_page_srv_name = '/marathon_web_interfaces/show_default'
         show_page_srv_name = '/marathon_web_interfaces/show_page'
         self.create_page_srv = rospy.ServiceProxy(create_page_srv_name, CreatePageService)
         self.show_default_page_srv = rospy.ServiceProxy(show_default_page_srv_name, Empty)
         self.show_page_srv = rospy.ServiceProxy(show_page_srv_name, ShowPageService)
+        s = rospy.Service('~preempt', Empty, self.preempt)
         self.tweet_string = ''
+        self.twitter_page = ''
+        self.sleep_time = 0
         ##########################################################
-        ## The following needs to be uncommented when run on robot
-        self.ptu = utils.PTU()
-        self.head = utils.Head()
-        self.photo = utils.Photo()
-        self.gaze = utils.Gaze()
-        rospy.loginfo("Create twitter client")
-        self.twitterClient = actionlib.SimpleActionClient(
-            'strands_tweets',
-            SendTweetAction
-        )
-        self.twitterClient.wait_for_server()
-        rospy.loginfo("...done")
-        rospy.loginfo("Create branding client")
-        self.brandingClient = actionlib.SimpleActionClient(
-            'image_branding',
-            ImageBrandingAction
-        )
-        self.brandingClient.wait_for_server()
-        rospy.loginfo("...done")
+        ## The following only runs on robot
+        if not self.simulator:
+            self.ptu = utils.PTU()
+            self.head = utils.Head()
+            self.photo = utils.Photo()
+            self.gaze = utils.Gaze()
+            rospy.loginfo("Create twitter client")
+            self.twitterClient = actionlib.SimpleActionClient(
+                'strands_tweets',
+                SendTweetAction
+            )
+            self.twitterClient.wait_for_server()
+            rospy.loginfo("...done")
+            rospy.loginfo("Create branding client")
+            self.brandingClient = actionlib.SimpleActionClient(
+                'image_branding',
+                ImageBrandingAction
+            )
+            self.brandingClient.wait_for_server()
+            rospy.loginfo("...done")
         ##########################################################
         self.speak = utils.Speak()
         paus_nav_srv_name = '/monitored_navigation/pause_nav'
@@ -65,23 +70,23 @@ class ExecuteTask():
         rospy.loginfo("Executing %s action" % goal.task)
         if goal.task == 'info':
             ##########################################################
-            ## The following needs to be uncommented when run on robot
-            self.head.turnHead()
-            self.ptu.turnPTU(-180)
-            self.gaze.people()
+            ## The following only runs on robot
+            if not self.simulator:
+                self.head.turnHead()
+                self.ptu.turnPTU(-180)
+                self.gaze.people()
             ##########################################################
             self.create_page_srv(goal.page, goal.text)
             self.speak.speak(goal.text)
         elif goal.task == 'twitter':
-            self.pause_resume_nav(True)
             self.tweet_string = goal.tweet
             ##########################################################
-            ## The following needs to be uncommented when run on robot
-            self.ptu.turnPTU(0)
-            self.head.resetHead()
-            self.gaze.people()
-            self.photo.photo()
-            self.sub = rospy.Subscriber("/head_xtion/rgb/image_color", Image, self.imageCallback)
+            ## The following only runs on robot
+            if not self.simulator:
+                self.ptu.turnPTU(0)
+                self.head.resetHead()
+                self.gaze.people()
+                self.sub = rospy.Subscriber("/head_xtion/rgb/image_color", Image, self.imageCallback)
             ##########################################################
             self.twitter_pub.publish(self.tweet_string)
             self.show_page_srv(goal.page)
@@ -90,13 +95,15 @@ class ExecuteTask():
         else:
             rospy.loginfo("Unknown action: %s" % goal.task)
             self._as.set_aborted()
-
-        rospy.sleep(30.) # Not nice but necessary since mary reports success before pulse has played the sounds.
+        self.sleep_time = rospy.get_time()
+        while self.sleep_time + 30 > rospy.get_time():
+            pass # Not nice but necessary since mary reports success before pulse has played the sounds.
         self.show_default_page_srv()
         ##########################################################
-        ## The following needs to be uncommented when run on robot
-        self.head.resetHead()
-        self.ptu.turnPTU(0)
+        ## The following only runs on robot
+        if not self.simulator:
+            self.head.resetHead()
+            self.ptu.turnPTU(0)
         ##########################################################
         self._as.set_succeeded()
 
@@ -113,6 +120,18 @@ class ExecuteTask():
         tweetgoal.photo = br_ph.branded_image
         #self.twitterClient.send_goal_and_wait(tweetgoal)
         self.sub.unregister()
+
+    def twitter_callback(self, message):
+        self.pause_resume_nav(True)
+        ##########################################################
+        ## The following only runs on robot
+        if not self.simulator:
+            self.photo.photo()
+        ##########################################################
+
+    def preempt(self, req):
+        self.sleep_time = 0
+        return EmptyResponse
 
     def pause_resume_nav(self, pause):
             try:
