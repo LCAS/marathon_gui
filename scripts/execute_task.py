@@ -27,24 +27,24 @@ class ExecuteTask():
         self.tweet_string = ''
         ##########################################################
         ## The following needs to be uncommented when run on robot
-        #self.ptu = utils.PTU()
-        #self.head = utils.Head()
-        #self.photo = utils.Photo()
-        #self.gaze = utils.Gaze()
-        #rospy.loginfo("Create twitter client")
-        #self.twitterClient = actionlib.SimpleActionClient(
-            #'strands_tweets',
-            #SendTweetAction
-        #)
-        #self.twitterClient.wait_for_server()
-        #rospy.loginfo("...done")
-        #rospy.loginfo("Create branding client")
-        #self.brandingClient = actionlib.SimpleActionClient(
-            #'image_branding',
-            #ImageBrandingAction
-        #)
-        #self.brandingClient.wait_for_server()
-        #rospy.loginfo("...done")
+        self.ptu = utils.PTU()
+        self.head = utils.Head()
+        self.photo = utils.Photo()
+        self.gaze = utils.Gaze()
+        rospy.loginfo("Create twitter client")
+        self.twitterClient = actionlib.SimpleActionClient(
+            'strands_tweets',
+            SendTweetAction
+        )
+        self.twitterClient.wait_for_server()
+        rospy.loginfo("...done")
+        rospy.loginfo("Create branding client")
+        self.brandingClient = actionlib.SimpleActionClient(
+            'image_branding',
+            ImageBrandingAction
+        )
+        self.brandingClient.wait_for_server()
+        rospy.loginfo("...done")
         ##########################################################
         self.speak = utils.Speak()
         paus_nav_srv_name = '/monitored_navigation/pause_nav'
@@ -66,8 +66,9 @@ class ExecuteTask():
         if goal.task == 'info':
             ##########################################################
             ## The following needs to be uncommented when run on robot
-            #self.ptu.turnPTU(-180)
-            #self.gaze.people()
+            self.head.turnHead()
+            self.ptu.turnPTU(-180)
+            self.gaze.people()
             ##########################################################
             self.create_page_srv(goal.page, goal.text)
             self.speak.speak(goal.text)
@@ -76,11 +77,11 @@ class ExecuteTask():
             self.tweet_string = goal.tweet
             ##########################################################
             ## The following needs to be uncommented when run on robot
-            #self.ptu.turnPTU(0)
-            #self.head.resetHead()
-            #self.gaze.people()
-            #self.photo.photo()
-            #self.sub = rospy.Subscriber("/head_xtion/rgb/image_color", Image, self.imageCallback)
+            self.ptu.turnPTU(0)
+            self.head.resetHead()
+            self.gaze.people()
+            self.photo.photo()
+            self.sub = rospy.Subscriber("/head_xtion/rgb/image_color", Image, self.imageCallback)
             ##########################################################
             self.twitter_pub.publish(self.tweet_string)
             self.show_page_srv(goal.page)
@@ -92,6 +93,11 @@ class ExecuteTask():
 
         rospy.sleep(30.) # Not nice but necessary since mary reports success before pulse has played the sounds.
         self.show_default_page_srv()
+        ##########################################################
+        ## The following needs to be uncommented when run on robot
+        self.head.resetHead()
+        self.ptu.turnPTU(0)
+        ##########################################################
         self._as.set_succeeded()
 
     def imageCallback(self, message):
@@ -99,13 +105,13 @@ class ExecuteTask():
         brandgoal.photo = message
         self.brandingClient.send_goal_and_wait(brandgoal)
         br_ph = self.brandingClient.get_result()
-        tweetgoal = strands_tweets.msg.SendTweetGoal()
+        tweetgoal = SendTweetGoal()
         text = self.tweet_string
         print "tweeting %s" % text
         tweetgoal.text = text
         tweetgoal.with_photo = True
         tweetgoal.photo = br_ph.branded_image
-        self.twitterClient.send_goal_and_wait(tweetgoal)
+        #self.twitterClient.send_goal_and_wait(tweetgoal)
         self.sub.unregister()
 
     def pause_resume_nav(self, pause):

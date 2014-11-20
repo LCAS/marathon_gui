@@ -120,6 +120,12 @@ class Head():
         self.head_command.position = [0, 0, 0, 0, 100]
         self.pub.publish(self.head_command)
 
+    def turnHead(self):
+        self.head_command = JointState()
+        self.head_command.name = ["HeadPan", "HeadTilt", "EyesTilt", "EyesPan", "EyeLids"]
+        self.head_command.position = [180, 0, 0, 0, 100]
+        self.pub.publish(self.head_command)
+
     def closeEyes(self):
         self.head_command = JointState()
         self.head_command.name = ["EyeLids"]
