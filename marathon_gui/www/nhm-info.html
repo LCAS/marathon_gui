@@ -4,7 +4,21 @@
     <meta content="text/html; charset=UTF-8" http-equiv="content-type">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
     <link rel="stylesheet" type="text/css" href="nhm-style.css">
+    <title>info</title>
+    <script src="js/jquery.js"></script>
+      <script src="js/display.js"></script>
+      <script type="text/javascript" src="js/jquery-ui.js"></script>
+      <script src="roslibjs/include/EventEmitter2/eventemitter2.js"></script>
+      <script src="roslibjs/build/roslib.js"></script>
+      <script src="ros3djs/include/threejs/three.js"></script>
+      <script src="ros3djs/include/ColladaAnimationCompress/ColladaLoader2.js"></script>
+      <script src="ros3djs/build/ros3d.min.js"></script>
+      <script src="nav2djs/build/nav2d.js"></script>
+      <script src="bootstrap/dist/js/bootstrap.js"></script>
+</head>
   </head>
   <body>
     <div id="container" style="width:1000px; height:600px">
@@ -14,11 +28,28 @@
         http://strands-project.eu </div>
       <div id="content" style="height: 650px; width: 700px; float: left; text-align: center;">
         <h2 style="font-size:200%;font-family:verdana;color:white;">Linda, the robotic guide</h2>
-        @BODY_TEXT@ </div>
+        @BODY_TEXT@ 
+        <br><br><br>
+        Press button to continue
+        <br>
+        <button type="button" onclick="var service_button = new ROSLIB.Service({ros : ros, name : '/execute_marathon_task/preempt', serviceType : 'std_srvs/Empty'}); var request_button = new ROSLIB.ServiceRequest({});  service_button .callService(request_button, function(result) {console.log('Called service'); }); console.log('Called')"
+            class="button-style speak-button" style="height: 45px; width: 45px;"></button>
+      </div>
       <div id="footer" style="text-align:right;font-size:75%;"> <img src="white-strands.png"
           style="position: absolute; left: 425px; top: 680px; width: 215px; height: 72px;"
           align="middel"><img src="uol-crest-white.png" style="position: absolute; left: 917px; top: 674px; width: 82px; height: 76px;"
           align="right"> </div>
     </div>
+      <script type="text/javascript">
+                    
+          var hostname = location.hostname;
+
+          var ros = new ROSLIB.Ros({
+             // this is filled by the ros node when writing this page to the web server, but doesn't currently work
+              // url : '<dynamic>bridge_server</dynamic>'
+              url : 'ws://'+hostname+':9090'
+          });
+
+        </script>
   </body>
 </html>
