@@ -43,7 +43,7 @@ buttonmappings:
         waypoint: WayPoint2
         info:
             text: |
-                The creatures that once swam in that sea are now often found as fossils, particularly in limestone.
+                The creatures that once swam in the sea are now often found as fossils, particularly in limestone.
             page: nhm-info.html
     armour: 
         waypoint: WayPoint3
