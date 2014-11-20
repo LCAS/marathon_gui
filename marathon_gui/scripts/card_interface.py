@@ -47,13 +47,13 @@ class CardInterface():
         self.sub = rospy.Subscriber("/socialCardReader/commands", String, self.create_task)
 
     def create_task(self, req):
-        if req.data == 'UNKNOWN':
+        if req.data == 'UNKNOWN' or req.data == 'PHOTO':
             return
         rospy.loginfo("Request to create task: %s" % req.data)
         self.photo.photo()
         self.speak.speak(req.data)
         if req.data == 'DOCK':
-            demanded_wait = Task(action='wait_action', max_duration=rospy.Duration(10*60), start_node_id='ChargingPoint')
+            demanded_wait = Task(action='wait_action', max_duration=rospy.Duration(30*60), start_node_id='ChargingPoint')
             self.td.demand_task(demanded_wait)
         elif req.data == 'WAIT':
             try:
