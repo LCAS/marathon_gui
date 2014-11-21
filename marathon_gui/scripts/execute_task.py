@@ -98,22 +98,22 @@ class ExecuteTask():
             self.create_page_srv(goal.page, goal.text)
             self.speak.speak(goal.text)
         elif goal.task == 'twitter':
-            self.pause_resume_nav(True)
+            #self.pause_resume_nav(True)
             self.tweet_string = goal.tweet
             ##########################################################
             ## The following only runs on robot
             if not self.simulator:
                 self.ptu.turnPTU(0)
                 self.head.resetHead()
-                self.photo.photo()
-                self.gaze.people()
+                #self.photo.photo()
+                #self.gaze.people()
                 self.sub = rospy.Subscriber("/head_xtion/rgb/image_color", Image, self.imageCallback)
             ##########################################################
-            self.twitter_pub.publish(self.tweet_string)
+            #self.twitter_pub.publish(self.tweet_string)
             self.twitter_page = goal.page
-            self.show_page_srv(self.twitter_page)
+            #self.show_page_srv(self.twitter_page)
             self.speak.speak(goal.text)
-            self.pause_resume_nav(False)
+            #self.pause_resume_nav(False)
         else:
             rospy.loginfo("Unknown action: %s" % goal.task)
             self._as.set_aborted()
@@ -155,6 +155,7 @@ class ExecuteTask():
         ## The following only runs on robot
         if not self.simulator:
             self.photo.photo()
+            self.gaze.people()
         ##########################################################
         rospy.sleep(10.)
         self.show_previous_page_srv()

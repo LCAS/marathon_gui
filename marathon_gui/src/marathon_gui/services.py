@@ -4,7 +4,7 @@ import re
 from strands_executive_msgs import task_utils
 from strands_executive_msgs.msg import Task, ExecutionStatus
 from strands_executive_msgs.srv import DemandTask, SetExecutionStatus
-from marathon_gui.srv import IsDefaultService
+from marathon_gui.srv import IsDefaultService, ShowPageService
 from std_srvs.srv import Empty
 
 
@@ -17,6 +17,7 @@ class TaskDemander(object):
         set_exe_stat_srv_name = '/task_executor/set_execution_status'
         is_default_srv_name = '/marathon_web_interfaces/is_default_page'
         default_page_srv_name = '/marathon_web_interfaces/show_default'
+        show_page_srv_name = '/marathon_web_interfaces/show_page'
         current_schedule_topic = '/current_schedule'
         rospy.loginfo("Demander: Waiting for task_executor service...")
         rospy.wait_for_service(demand_task_service)
@@ -28,9 +29,11 @@ class TaskDemander(object):
         rospy.loginfo("Demander: Waiting for marathon_web_interfaces services...")
         rospy.wait_for_service(is_default_srv_name)
         rospy.wait_for_service(default_page_srv_name)
+        rospy.wait_for_service(show_page_srv_name)
         rospy.loginfo("Demander: Done")
         self.is_default_srv = rospy.ServiceProxy(is_default_srv_name, IsDefaultService)
         self.default_srv = rospy.ServiceProxy(default_page_srv_name, Empty)
+        self.show_srv = rospy.ServiceProxy(show_page_srv_name, ShowPageService)
         if with_monitor:
             self.sub = rospy.Subscriber(
                 current_schedule_topic,
@@ -50,6 +53,12 @@ class TaskDemander(object):
     def schedule_monitor(self, schedule):
         """docstring for schedule_monitor"""
         rospy.logdebug("schedule_monitor triggered")
+        if len(schedule.execution_queue) > 0:
+            if schedule.execution_queue[0] == 'ptu_pan_tilt_metric_map':
+                rospy.loginfo("Schedule Monitor: Found important task is active. Will show currently working page.")
+                self.show_srv('nhm-patrol.html')
+                rospy.sleep(60)
+                return
         if len(schedule.execution_queue) == 0 and self.is_default_srv().default:
             rospy.sleep(60)
             return
