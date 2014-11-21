@@ -23,9 +23,6 @@ class CardInterface():
         show_default_page_srv_name = '/marathon_web_interfaces/show_default'
         show_page_srv_name = '/marathon_web_interfaces/show_page'
         paus_nav_srv_name = '/monitored_navigation/pause_nav'
-        self.show_page_srv = rospy.ServiceProxy(show_page_srv_name, ShowPageService)
-        self.pause_nav_srv = rospy.ServiceProxy(paus_nav_srv_name, PauseResumeNav)
-        self.show_default_page_srv = rospy.ServiceProxy(show_default_page_srv_name, Empty)
 
     	if display_no == 0:
 	    	rospy.loginfo('writing to all displays')
@@ -34,18 +31,27 @@ class CardInterface():
 
         self.speak = utils.Speak()
         self.photo = utils.Photo()
-        rospy.loginfo("Creating PageUtils")
+        rospy.loginfo("Card: Creating PageUtils")
         self.pu = PageUtils(default_page='nhm-map.html', display_no=display_no)
-        rospy.loginfo("...done")
-        rospy.loginfo("Creating TaskDemander")
+        rospy.loginfo("Card: ...done")
+        rospy.loginfo("Card: Creating TaskDemander")
         self.td = TaskDemander()
-        rospy.loginfo("...done")
-        rospy.loginfo("Ready to create tasks.")
+        rospy.loginfo("Card: ...done")
+        rospy.loginfo("Card: Waiting for marathon_web_interfaces services...")
+        rospy.wait_for_service(show_page_srv_name)
+        rospy.wait_for_service(show_default_page_srv_name)
+        rospy.loginfo("Card: Done")
+        rospy.loginfo("Card: Waiting for monitore_navigation pause service...")
+        rospy.wait_for_service(pause_nav_srv_name)
+        rospy.loginfo("Card: Done")
+        self.show_page_srv = rospy.ServiceProxy(show_page_srv_name, ShowPageService)
+        self.pause_nav_srv = rospy.ServiceProxy(paus_nav_srv_name, PauseResumeNav)
+        self.show_default_page_srv = rospy.ServiceProxy(show_default_page_srv_name, Empty)
 
         # Setup -- must be done before other interface calls
     	# serves pages relative to marathon_gui/www -- this is important as there as some javascript files there
-        self.show_default_page_srv = rospy.ServiceProxy(show_default_page_srv_name, Empty)
         self.sub = rospy.Subscriber("/socialCardReader/commands", String, self.create_task)
+        rospy.loginfo("Card: Ready to create tasks.")
 
     def create_task(self, req):
         if req.data == 'UNKNOWN' or req.data == 'PHOTO':
