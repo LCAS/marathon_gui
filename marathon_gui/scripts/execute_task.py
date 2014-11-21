@@ -12,6 +12,7 @@ from image_branding.msg import ImageBrandingAction, ImageBrandingGoal
 from sensor_msgs.msg import Image
 from strands_navigation_msgs.srv import PauseResumeNav
 from card_image_tweet.msg import Tweet
+import thread
 
 class ExecuteTask():
     "A calss to reconfigure the velocity of the DWAPlannerROS."
@@ -33,6 +34,7 @@ class ExecuteTask():
         self.show_page_srv = rospy.ServiceProxy(show_page_srv_name, ShowPageService)
         s = rospy.Service('~preempt', Empty, self.preempt)
         self.twitter_page = 'nhm-twitter.html' # Only updated from yaml file if twitter action is executed once... Ugly
+        self.t_image = None
         self.sleep_time = 0
         ##########################################################
         ## The following only runs on robot
@@ -71,7 +73,14 @@ class ExecuteTask():
         rospy.loginfo("Execute: ...done")
         self.twitter_sub = rospy.Subscriber("/card_image_tweet/tweet", Tweet, self.twitter_callback)
         self.twitter_pub = rospy.Publisher("/marathon_web_interfaces/twitter/message", String, latch=True)
-        self.twitter_image_pub = rospy.Publisher("/marathon_web_interfaces/twitter/image", Image, latch=True)
+        self.twitter_image_pub = rospy.Publisher("/marathon_web_interfaces/twitter/image", Image)
+        thread.start_new_thread(self.republisher, ()) # Very Ugly but the mjpeg_server does not work with latched topics anymore...
+
+    def republisher(self):
+        while not rospy.is_shutdown():
+            if not self.t_image == None and self.twitter_image_pub.get_num_connections():
+                self.twitter_image_pub.publish(self.t_image)
+            rospy.sleep(1.)
 
     def executeCallback(self, goal):
         rospy.loginfo("Executing %s action" % goal.task)
@@ -129,13 +138,15 @@ class ExecuteTask():
         tweetgoal.with_photo = True
         tweetgoal.photo = br_ph.branded_image
         self.twitterClient.send_goal_and_wait(tweetgoal)
-        self.twitter_image_pub.publish(br_ph.branded_image)
+        #self.twitter_image_pub.publish(br_ph.branded_image)
+        self.t_image = br_ph.branded_image
         self.sub.unregister()
 
     def twitter_callback(self, message):
         self.pause_resume_nav(True)
         self.twitter_pub.publish(message.text)
-        self.twitter_image_pub.publish(message.photo)
+        #self.twitter_image_pub.publish(message.photo)
+        self.t_image = br_ph.branded_image
         self.show_page_srv(self.twitter_page)
         ##########################################################
         ## The following only runs on robot
