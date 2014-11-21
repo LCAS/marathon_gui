@@ -11,6 +11,7 @@ from strands_tweets.msg import SendTweetAction, SendTweetGoal
 from image_branding.msg import ImageBrandingAction, ImageBrandingGoal
 from sensor_msgs.msg import Image
 from strands_navigation_msgs.srv import PauseResumeNav
+from card_image_tweet.msg import Tweet
 
 class ExecuteTask():
     "A calss to reconfigure the velocity of the DWAPlannerROS."
@@ -26,8 +27,7 @@ class ExecuteTask():
         self.show_default_page_srv = rospy.ServiceProxy(show_default_page_srv_name, Empty)
         self.show_page_srv = rospy.ServiceProxy(show_page_srv_name, ShowPageService)
         s = rospy.Service('~preempt', Empty, self.preempt)
-        self.tweet_string = ''
-        self.twitter_page = ''
+        self.twitter_page = 'nhm-twitter.html' # Only updated from yaml file if twitter action is executed once... Ugly
         self.sleep_time = 0
         ##########################################################
         ## The following only runs on robot
@@ -64,7 +64,9 @@ class ExecuteTask():
         rospy.loginfo(" ...starting")
         self._as.start()
         rospy.loginfo(" ...done")
+        self.twitter_sub = rospy.Subscriber("/card_image_tweet/tweet", Tweet, self.twitter_callback)
         self.twitter_pub = rospy.Publisher("/marathon_web_interfaces/twitter/message", String, latch=True)
+        self.twitter_image_pub = rospy.Publisher("/marathon_web_interfaces/twitter/image", Image, latch=True)
 
     def executeCallback(self, goal):
         rospy.loginfo("Executing %s action" % goal.task)
@@ -79,17 +81,20 @@ class ExecuteTask():
             self.create_page_srv(goal.page, goal.text)
             self.speak.speak(goal.text)
         elif goal.task == 'twitter':
+            self.pause_resume_nav(True)
             self.tweet_string = goal.tweet
             ##########################################################
             ## The following only runs on robot
             if not self.simulator:
                 self.ptu.turnPTU(0)
                 self.head.resetHead()
+                self.photo.photo()
                 self.gaze.people()
                 self.sub = rospy.Subscriber("/head_xtion/rgb/image_color", Image, self.imageCallback)
             ##########################################################
             self.twitter_pub.publish(self.tweet_string)
-            self.show_page_srv(goal.page)
+            self.twitter_page = goal.page
+            self.show_page_srv(self.twitter_page)
             self.speak.speak(goal.text)
             self.pause_resume_nav(False)
         else:
@@ -118,16 +123,23 @@ class ExecuteTask():
         tweetgoal.text = text
         tweetgoal.with_photo = True
         tweetgoal.photo = br_ph.branded_image
-        #self.twitterClient.send_goal_and_wait(tweetgoal)
+        self.twitterClient.send_goal_and_wait(tweetgoal)
+        self.twitter_image_pub.publish(br_ph.branded_image)
         self.sub.unregister()
 
     def twitter_callback(self, message):
         self.pause_resume_nav(True)
+        self.twitter_pub.publish(message.text)
+        self.twitter_image_pub.publish(message.photo)
+        self.show_page_srv(self.twitter_page)
         ##########################################################
         ## The following only runs on robot
         if not self.simulator:
             self.photo.photo()
         ##########################################################
+        rospy.sleep(10.)
+        self.show_default_page_srv()
+        self.pause_resume_nav(False)
 
     def preempt(self, req):
         self.sleep_time = 0
