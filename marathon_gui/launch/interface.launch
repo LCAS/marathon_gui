@@ -2,6 +2,7 @@
   <arg name="behaviour" default="collection"/>
   <arg name="simulator_mode" default="false"/>
 
+  <node name="mjpeg_server" pkg="mjpeg_server" type="mjpeg_server" output="screen" respawn="true" /> 
   <node name="execute_marathon_task" pkg="marathon_gui" type="execute_task.py" output="screen" respawn="true" >
     <param name="simulator_mode" value="$(arg simulator_mode)" type="bool"/>
   </node>
