@@ -57,7 +57,8 @@ class PageUtils(object):
         return GetPageServiceResponse(self.history[-1])
 
     def is_default(self, req):
-        return IsDefaultServiceResponse(self.history[-1] == self.default_page)
+        return IsDefaultServiceResponse(self.history[-1] == self.default_page\
+                                        or self.history[-1] == 'nhm-wait.html') # Ugly!
 
     def show_default(self, req):
         self.generate_interface_page(self.default_page)
