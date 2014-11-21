@@ -49,7 +49,7 @@ class TaskDemander(object):
 
     def schedule_monitor(self, schedule):
         """docstring for schedule_monitor"""
-        rospy.loginfo("schedule_monitor triggered")
+        rospy.logdebug("schedule_monitor triggered")
         if len(schedule.execution_queue) == 0 and self.is_default_srv().default:
             rospy.sleep(60)
             return

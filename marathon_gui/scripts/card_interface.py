@@ -22,7 +22,7 @@ class CardInterface():
     	display_no = rospy.get_param("~display", 0)
         show_default_page_srv_name = '/marathon_web_interfaces/show_default'
         show_page_srv_name = '/marathon_web_interfaces/show_page'
-        paus_nav_srv_name = '/monitored_navigation/pause_nav'
+        pause_nav_srv_name = '/monitored_navigation/pause_nav'
 
     	if display_no == 0:
 	    	rospy.loginfo('writing to all displays')
@@ -41,11 +41,8 @@ class CardInterface():
         rospy.wait_for_service(show_page_srv_name)
         rospy.wait_for_service(show_default_page_srv_name)
         rospy.loginfo("Card: Done")
-        rospy.loginfo("Card: Waiting for monitore_navigation pause service...")
-        rospy.wait_for_service(pause_nav_srv_name)
-        rospy.loginfo("Card: Done")
         self.show_page_srv = rospy.ServiceProxy(show_page_srv_name, ShowPageService)
-        self.pause_nav_srv = rospy.ServiceProxy(paus_nav_srv_name, PauseResumeNav)
+        self.pause_nav_srv = rospy.ServiceProxy(pause_nav_srv_name, PauseResumeNav)
         self.show_default_page_srv = rospy.ServiceProxy(show_default_page_srv_name, Empty)
 
         # Setup -- must be done before other interface calls
