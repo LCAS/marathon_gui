@@ -11,7 +11,7 @@ from strands_tweets.msg import SendTweetAction, SendTweetGoal
 from image_branding.msg import ImageBrandingAction, ImageBrandingGoal
 from sensor_msgs.msg import Image
 from strands_navigation_msgs.srv import PauseResumeNav
-from card_image_tweet.msg import Tweet
+from strands_tweets.msg import Tweeted
 import thread
 
 class ExecuteTask():
@@ -71,7 +71,7 @@ class ExecuteTask():
         rospy.loginfo("Execute: ...starting")
         self._as.start()
         rospy.loginfo("Execute: ...done")
-        self.twitter_sub = rospy.Subscriber("/card_image_tweet/tweet", Tweet, self.twitter_callback)
+        self.twitter_sub = rospy.Subscriber("/strands_tweets/tweet", Tweeted, self.twitter_callback)
         self.twitter_pub = rospy.Publisher("/marathon_web_interfaces/twitter/message", String, latch=True)
         self.twitter_image_pub = rospy.Publisher("/marathon_web_interfaces/twitter/image", Image)
         thread.start_new_thread(self.republisher, ()) # Very Ugly but the mjpeg_server does not work with latched topics anymore...
