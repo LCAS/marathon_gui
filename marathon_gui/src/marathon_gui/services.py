@@ -18,13 +18,17 @@ class TaskDemander(object):
         is_default_srv_name = '/marathon_web_interfaces/is_default_page'
         default_page_srv_name = '/marathon_web_interfaces/show_default'
         current_schedule_topic = '/current_schedule'
-        rospy.loginfo("Waiting for task_executor service...")
+        rospy.loginfo("Demander: Waiting for task_executor service...")
         rospy.wait_for_service(demand_task_service)
         rospy.wait_for_service(set_exe_stat_srv_name)
-        rospy.loginfo("Done")
+        rospy.loginfo("Demander: Done")
         self.demand_task_srv = rospy.ServiceProxy(demand_task_service, DemandTask)
         set_execution_status = rospy.ServiceProxy(set_exe_stat_srv_name, SetExecutionStatus)
         set_execution_status(True)
+        rospy.loginfo("Demander: Waiting for marathon_web_interfaces services...")
+        rospy.wait_for_service(is_default_srv_name)
+        rospy.wait_for_service(default_page_srv_name)
+        rospy.loginfo("Demander: Done")
         self.is_default_srv = rospy.ServiceProxy(is_default_srv_name, IsDefaultService)
         self.default_srv = rospy.ServiceProxy(default_page_srv_name, Empty)
         if with_monitor:
@@ -45,7 +49,7 @@ class TaskDemander(object):
 
     def schedule_monitor(self, schedule):
         """docstring for schedule_monitor"""
-        rospy.logdebug("schedule_monitor triggered")
+        rospy.loginfo("schedule_monitor triggered")
         if len(schedule.execution_queue) == 0 and self.is_default_srv().default:
             rospy.sleep(60)
             return

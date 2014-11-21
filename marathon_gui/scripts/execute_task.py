@@ -23,6 +23,11 @@ class ExecuteTask():
         create_page_srv_name = '/marathon_web_interfaces/create_page'
         show_default_page_srv_name = '/marathon_web_interfaces/show_default'
         show_page_srv_name = '/marathon_web_interfaces/show_page'
+        rospy.loginfo("Execute: Waiting for marathon_web_interfaces services...")
+        rospy.wait_for_service(create_page_srv_name)
+        rospy.wait_for_service(show_page_srv_name)
+        rospy.wait_for_service(show_default_page_srv_name)
+        rospy.loginfo("Execute: Done")
         self.create_page_srv = rospy.ServiceProxy(create_page_srv_name, CreatePageService)
         self.show_default_page_srv = rospy.ServiceProxy(show_default_page_srv_name, Empty)
         self.show_page_srv = rospy.ServiceProxy(show_page_srv_name, ShowPageService)
@@ -54,16 +59,16 @@ class ExecuteTask():
         self.speak = utils.Speak()
         paus_nav_srv_name = '/monitored_navigation/pause_nav'
         self.pause_nav_srv = rospy.ServiceProxy(paus_nav_srv_name, PauseResumeNav)
-        rospy.loginfo("Creating action server.")
+        rospy.loginfo("Execute: Creating action server.")
         self._as = actionlib.SimpleActionServer(
             self._action_name,
             ExecuteTaskAction,
             self.executeCallback,
             auto_start=False
         )
-        rospy.loginfo(" ...starting")
+        rospy.loginfo("Execute: ...starting")
         self._as.start()
-        rospy.loginfo(" ...done")
+        rospy.loginfo("Execute: ...done")
         self.twitter_sub = rospy.Subscriber("/card_image_tweet/tweet", Tweet, self.twitter_callback)
         self.twitter_pub = rospy.Publisher("/marathon_web_interfaces/twitter/message", String, latch=True)
         self.twitter_image_pub = rospy.Publisher("/marathon_web_interfaces/twitter/image", Image, latch=True)

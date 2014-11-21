@@ -50,23 +50,14 @@ class WebInterface():
         pprint.pprint(self.config)
 
         s = rospy.Service('~create_task', MapButtonService, self.create_task)
-        # ExecuteTask client - only used to make sure that the action server is
-        # there.
-        rospy.loginfo("Creating execute_marathon_task client")
-        self.exClient = actionlib.SimpleActionClient(
-            'execute_marathon_task',
-            ExecuteTaskAction
-        )
-        self.exClient.wait_for_server()
-        rospy.loginfo("...done")
         self.speak = utils.Speak()
-        rospy.loginfo("Creating PageUtils")
+        rospy.loginfo("Interface: Creating PageUtils")
         self.pu = PageUtils(default_page='nhm-map.html', display_no=display_no)
-        rospy.loginfo("...done")
-        rospy.loginfo("Creating TaskDemander")
+        rospy.loginfo("Interface: ...done")
+        rospy.loginfo("Interface: Creating TaskDemander")
         self.td = TaskDemander()
         rospy.loginfo("...done")
-        rospy.loginfo("Ready to create tasks.")
+        rospy.loginfo("Interface: Ready to create tasks.")
 
         # Setup -- must be done before other interface calls
     	# serves pages relative to marathon_gui/www -- this is important as there as some javascript files there
