@@ -24,14 +24,17 @@ class ExecuteTask():
         create_page_srv_name = '/marathon_web_interfaces/create_page'
         show_default_page_srv_name = '/marathon_web_interfaces/show_default'
         show_page_srv_name = '/marathon_web_interfaces/show_page'
+        show_previous_page_srv_name = '/marathon_web_interfaces/show_previous'
         rospy.loginfo("Execute: Waiting for marathon_web_interfaces services...")
         rospy.wait_for_service(create_page_srv_name)
         rospy.wait_for_service(show_page_srv_name)
         rospy.wait_for_service(show_default_page_srv_name)
+        rospy.wait_for_service(show_previous_page_srv_name)
         rospy.loginfo("Execute: Done")
         self.create_page_srv = rospy.ServiceProxy(create_page_srv_name, CreatePageService)
         self.show_default_page_srv = rospy.ServiceProxy(show_default_page_srv_name, Empty)
         self.show_page_srv = rospy.ServiceProxy(show_page_srv_name, ShowPageService)
+        self.show_previous_page_srv = rospy.ServiceProxy(show_previous_page_srv_name, Empty)
         s = rospy.Service('~preempt', Empty, self.preempt)
         self.twitter_page = 'nhm-twitter.html' # Only updated from yaml file if twitter action is executed once... Ugly
         self.t_image = None
@@ -146,7 +149,7 @@ class ExecuteTask():
         self.pause_resume_nav(True)
         self.twitter_pub.publish(message.text)
         #self.twitter_image_pub.publish(message.photo)
-        self.t_image = br_ph.branded_image
+        self.t_image = message.photo
         self.show_page_srv(self.twitter_page)
         ##########################################################
         ## The following only runs on robot
@@ -154,7 +157,7 @@ class ExecuteTask():
             self.photo.photo()
         ##########################################################
         rospy.sleep(10.)
-        self.show_default_page_srv()
+        self.show_previous_page_srv()
         self.pause_resume_nav(False)
 
     def preempt(self, req):
