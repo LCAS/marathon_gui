@@ -8,113 +8,6 @@
     <meta name="author" content="">
     <link rel="stylesheet" type="text/css" href="nhm-style.css">
     <title>working</title>
-    <script src="js/jquery.js"></script>
-    <script src="js/display.js"></script>
-    <script type="text/javascript" src="js/jquery-ui.js"></script>
-    <script src="roslibjs/include/EventEmitter2/eventemitter2.js"></script>
-    <script src="roslibjs/build/roslib.js"></script>
-    <script src="ros2djs/include/EaselJS/easeljs.js"></script>
-    <script src="ros2djs/build/ros2d.js"></script>
-    <script src="bootstrap/dist/js/bootstrap.js"></script>
-    <script src="js/mustache.js"></script>
-    <script type="text/javascript">
-
-      function init() {
-        var hostname = location.hostname;
-
-        // Connecting to ROS.
-        var ros = new ROSLIB.Ros({
-          url : 'ws://'+hostname+':9090'
-        });
-        
-        var sayTopic = new ROSLIB.Topic({
-            ros         : ros,
-            name        : '/nhm/speak',
-            messageType : 'std_msgs/String'
-        });
-        
-        sayTopic.subscribe(function(message) {
-            // Formats the pose for outputting.
-            var say = message.data;
-    
-            document.getElementById("saytext").value=say;
-        });
-  
-        // Create the main viewer.
-        var viewer = new ROS2D.Viewer({
-          divID : 'nav',
-          width : 400,
-          height : 400
-        });
-  
-        // Subscribes to the robot's OccupancyGrid, which is ROS representation of
-        // the map, and renders the map in the scene.
-        var gridClient = new ROS2D.OccupancyGridClient({
-          ros : ros,
-          rootObject : viewer.scene
-        });
-
-        gridClient.on('change', function() {
-
-        // scale the viewer to fit the map
-        viewer.scaleToDimensions(gridClient.currentGrid.width, 
-          gridClient.currentGrid.height);
-
-        viewer.shift(gridClient.currentGrid.x, gridClient.currentGrid.y-21);
-
-
-        // get a handle to the stage
-        var stage;
-        if (viewer.scene instanceof createjs.Stage) {
-          stage = viewer.scene;
-        } else {
-          stage = viewer.scene.getStage();
-        }
-
-        // marker for the robot
-        var robotMarker = new ROS2D.NavigationArrow({
-          size : 8,
-          strokeSize : 1,
-          fillColor : createjs.Graphics.getRGB(255, 128, 0, 0.66),
-          pulse : false
-        });
-
-        // wait for a pose to come in first
-        robotMarker.visible = false;
-       
-        viewer.scene.addChild(robotMarker);
-
-        var initScaleSet = false;
-
-        // setup a listener for the robot pose
-        var poseListener = new ROSLIB.Topic({
-          ros : ros,
-          name : '/robot_pose',
-          messageType : 'geometry_msgs/Pose',
-          throttle_rate : 10
-        });
-
-        poseListener.subscribe(function(pose) {
-          // update the robots position on the map
-          robotMarker.x = pose.position.x;
-          robotMarker.y = -pose.position.y;
-          
-          if (!initScaleSet) {
-            robotMarker.scaleX = 1.0 / stage.scaleX;
-            robotMarker.scaleY = 1.0 / stage.scaleY;
-            initScaleSet = true;
-          }
-
-          // change the angle
-          robotMarker.rotation = stage.rosQuaternionToGlobalTheta(pose.orientation);
-
-          robotMarker.visible = true;
-
-        });
-       });
-
-      }
-      </script>
   </head>
   <body onload="init()"> 
     <div id="container" style="width:1000px; height:600px">
@@ -122,12 +15,9 @@
         <img style="width: 295px; height: 658px;" src="robot-white.png">
         http://strands-project.eu </div>
       <div id="content" style="height: 650px; width: 700px; float: left; text-align: center;">
-        <h2>Robots on patrol</h2>
-        <p>I am currently on security patrol.<br>
-          Please come back later or find one of my colleagues at our stand.</p><div id="container" class="cardbox">
-        Show me your lanyard to tweet a picture<br><br>
-        <img src="card.png" style="height: 120px; width: 80px">
-        </div>
+        <h2>Linda, the robotic guide</h2>
+        <p>I am currently on a science mission.<br>
+          Please come back later after I finished collecting data.</p>
         <div id="nav" style="height: 400px; width: 400px; position: absolute; left: 470px; top: 230px; width: 119px; text-align: center;">
         </div>
         <div id="footer" tyle="text-align:right;font-size:75%;"> <img src="white-strands.png"
