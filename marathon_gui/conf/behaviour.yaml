@@ -1,52 +1,52 @@
 buttonmappings: 
     boat: 
-        waypoint: WayPoint1
+        waypoint: Boat
         info:
             text: |
                 This complete boat was made from a single oak tree truck, and still bears axe marks from its manufacture. 
                 It was deliberately sunk as an offering and may have been specially made for this purpose.
             page: nhm-info.html
     mosaik: 
-        waypoint: WayPoint5
+        waypoint: PlayArea
         twitter:
             text: |
-                Image taken.
+                Taking image.
             page: nhm-twitter.html
     axes: 
-        waypoint: WayPoint2
+        waypoint: Axes
         info:
             text: |
                 Between 1969 and 1972, Professor Alan Straw and Chris Alabaster (a schoolboy) discovered three hand axes, flint tools and animal bones in a quarry face at Welton-le-Wold. 
                 It was soon realised that these finds were important not just for their extreme age, but for their context within the quarry face.
             page: nhm-info.html
     tank: 
-        waypoint: WayPoint3
+        waypoint: Tank
         info:
             text: |
-                 It not clear is to what extent Christianity was adopted by the masses, especially in the far-flung outreaches of the Empire such as Lincolnshire.
+                 It is not clear to what extent Christianity was adopted by the masses, especially in the far-flung outreaches of the Empire such as Lincolnshire.
                  This lead tank is evidence of the existence of Christianity in late Roman Lincolnshire.
             page: nhm-info.html
     walrus: 
-        waypoint: WayPoint4
+        waypoint: Seal
         info:
             text: |
                 This matrix is made of walrus ivory, and was used for sealing documents with wax. 
                 It was made in the late 11th Century, and was found during excavations on Hungate in Lincoln.
             page: nhm-info.html
     gold: 
-        waypoint: WayPoint1
+        waypoint: Gold 
         info:
             text: |
                 This gold neck torc and bracelet were found at Sudbrook and Baumber respectively, and represent the growing wealth of certain individuals in late Bronze Age Lincolnshire.
             page: nhm-info.html
     plesiosaur: 
-        waypoint: WayPoint2
+        waypoint: Fossil
         info:
             text: |
                 The creatures that once swam in the sea are now often found as fossils, particularly in limestone.
             page: nhm-info.html
     armour: 
-        waypoint: WayPoint3
+        waypoint: Armour
         info:
             text: |
                 The armour was found close to the battlefield, and it appears as if it was torn off in a hurry. 
@@ -72,17 +72,7 @@ speeches:
         - I only arrived here recently but I'll tell you what I know.
 tweets:
     action:
-        - A visitor of the 2014  asked me to take this picture. 
-        - I was sent here by a visitor of the 2014  to tweet a picture. 
-        - I was asked to tweet this picture during . Don't blame me if it's boring. 
-        - A lot of tweeting going on at . Here is another one from 
-    card:
-        - Look who came to visit me at 
-        - One of my friends came to  for  and visited the  stand.
-        - Look who is here NHM_London for UniWeek. unilincoln strands_project
-        - I am here NHM_London with my friend for UniWeek. unilincoln
-        - UniWeek is always a nice excuse for meeting new people. NHM_London unilincoln
-        - Robots, Dinosaurs and Friends! NHM_London UniWeek unilincoln strands_project
-        - I came from @unilincoln to NHM_London for UniWeek to meet this lovely human.
-        - I took a picture of this guy at UniWeek in NHM_London. I hope he also tweeted one of me. unilincoln
-        - I'm good at tweeting but I can do other things as well: http://strands-project.eu strands_project #UniWeek
+        - "A visitor of the @collectionlinc asked me to take this picture for #RobotMarathon at #ERW14" 
+        - "I was sent here by a visitor of the @collectionlinc to tweet a picture for #RobotMarathon at #ERW14" 
+        - "I was asked to tweet this picture iin @collectionlinc. Don't blame me if it's boring. #RobotMarathon #ERW14" 
+        - "A lot of tweeting going on at @collectionlinc. Here is another one from #RobotMarathon at #ERW14"
