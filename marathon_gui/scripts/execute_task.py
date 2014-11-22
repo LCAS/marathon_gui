@@ -118,7 +118,7 @@ class ExecuteTask():
             rospy.loginfo("Unknown action: %s" % goal.task)
             self._as.set_aborted()
         self.sleep_time = rospy.get_time()
-        while self.sleep_time + 30 > rospy.get_time():
+        while self.sleep_time + 20 > rospy.get_time():
             pass # Not nice but necessary since mary reports success before pulse has played the sounds.
         self.show_default_page_srv()
         ##########################################################
