@@ -54,7 +54,9 @@ class TaskDemander(object):
         """docstring for schedule_monitor"""
         rospy.logdebug("schedule_monitor triggered")
         if len(schedule.execution_queue) > 0:
-            if schedule.execution_queue[0] == 'ptu_pan_tilt_metric_map':
+            if schedule.execution_queue[0].action == 'ptu_pan_tilt_metric_map'\
+                or schedule.execution_queue[0].action == 'strands_image_tweets'\
+                or schedule.execution_queue[0].action == 'move_mongodb_entries':
                 rospy.loginfo("Schedule Monitor: Found important task is active. Will show currently working page.")
                 self.show_srv('nhm-patrol.html')
                 rospy.sleep(60)

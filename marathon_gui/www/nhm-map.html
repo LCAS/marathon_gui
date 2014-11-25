@@ -98,12 +98,12 @@
             class="button-style speak-button" style="height: 45px; width: 45px;"></button>
         </ul>
         <!--Walrus buttons-->
+	<!--
         <ul style="position: absolute; left: 780px; top: 120px; width: 119px;">
           <button type="button" onclick="var service_button = new ROSLIB.Service({ros : ros, name : '/marathon_web_interfaces/create_task', serviceType : 'marathon_gui/MapButtonService'}); var request_button = new ROSLIB.ServiceRequest({identifier : '{&quot;waypoint&quot;: &quot;walrus&quot;, &quot;action&quot;: &quot;info&quot;}'});  service_button .callService(request_button, function(result) {console.log('Called service'); }); console.log('Called')"
             class="button-style speak-button" style="height: 45px; width: 45px;"></button>
-            <!--<button type="button" onclick="var service_button = new ROSLIB.Service({ros : ros, name : '/marathon_web_interfaces/create_task', serviceType : 'marathon_gui/MapButtonService'}); var request_button = new ROSLIB.ServiceRequest({identifier : '{&quot;waypoint&quot;: &quot;stand&quot;, &quot;action&quot;: &quot;twitter&quot;}'});  service_button .callService(request_button, function(result) {console.log('Called service'); }); console.log('Called')"-->
-            <!--class="button-style twitter-button" style="height: 45px; width: 45px;"></button>-->
         </ul>
+	-->
         <!--Gold buttons-->
         <ul style="position: absolute; left: 360px; top: 250px; width: 119px;">
           <button type="button" onclick="var service_button = new ROSLIB.Service({ros : ros, name : '/marathon_web_interfaces/create_task', serviceType : 'marathon_gui/MapButtonService'}); var request_button = new ROSLIB.ServiceRequest({identifier : '{&quot;waypoint&quot;: &quot;gold&quot;, &quot;action&quot;: &quot;info&quot;}'});  service_button .callService(request_button, function(result) {console.log('Called service'); }); console.log('Called')"

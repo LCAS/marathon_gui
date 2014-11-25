@@ -58,7 +58,7 @@ class CardInterface():
         self.speak.speak(req.data)
         if req.data == 'DOCK':
             self.show_page_srv('nhm-wait.html')
-            demanded_wait = Task(action='wait_action', max_duration=rospy.Duration(30*60), start_node_id='ChargingPoint')
+            demanded_wait = Task(action='wait_action', max_duration=rospy.Duration(60*60), start_node_id='WayPoint73')
             self.td.demand_task(demanded_wait)
         elif req.data == 'WAIT':
             self.show_page_srv('nhm-wait.html')
